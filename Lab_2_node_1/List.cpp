@@ -450,6 +450,26 @@ void List::descendingSortingOfList()
 	}
 }
 
+// function for reversing Nodes of List
+void List::revertingList()
+{
+	Node* ptr;
+	ptr = headNode;
+	int dSize = size / 2;
+	int temp;
+	List::end();
+	
+	for (int i = 0; i < dSize; i++)
+	{
+		temp = currentNode->getValue();
+		currentNode->setValue(ptr->getValue());
+		ptr->setValue(temp);
+		List::moveBack();
+		ptr = ptr->getNextNode();
+	}
+	List::start();
+}
+
 
 
 

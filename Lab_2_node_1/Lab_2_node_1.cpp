@@ -135,6 +135,10 @@ int main()	// Main function started*********************************************
 	myLinkList.end();
 	cout << "\nAfter Moving current Node to the end:\n";
 	cout << myLinkList.get() << endl;
+	// Reversing Nodes
+	cout << "Displaying Nodes of List after reversing them:\n";
+	myLinkList.revertingList();
+	myLinkList.displayList();
 	//******************************************************
 
 	// Inserting Node after a certain Node
@@ -153,6 +157,10 @@ int main()	// Main function started*********************************************
 	// Sorting Nodes
 	cout << "Displaying Nodes of List after sorting them in Ascending order:\n";
 	myLinkList.ascendingSortingOfList();
+	myLinkList.displayList();
+	// Reversing Nodes
+	cout << "Displaying Nodes of List after reversing them:\n";
+	myLinkList.revertingList();
 	myLinkList.displayList();
 
 	return 0;

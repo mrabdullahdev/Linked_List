@@ -24,6 +24,7 @@ public:
 	void displayList();
 	void ascendingSortingOfList();
 	void descendingSortingOfList();
+	void revertingList();
 
 	bool updateValue(int presentValue, int newValue);
 	bool updateIndex(int n, int index);
