@@ -22,6 +22,11 @@ int main()	// Main function started*********************************************
 	cout << "\nDisplaying List after adding 5 Nodes:\n";
 	myLinkList.displayList();
 
+	// Moving current Node Backward
+	myLinkList.moveBack();
+	cout << "\nAfter Moving current Node Backward:\n";
+	cout << myLinkList.get() << endl;
+
 	// Inserting Node in the beginning
 	myLinkList.insertAtBegin(5);
 	// Displaying List after Inserting Node in the beginning
@@ -51,12 +56,13 @@ int main()	// Main function started*********************************************
 	{
 		cout << "\nThe Node is previously not present in the List.\n";
 	}
-
+	
+	
 	// Deleting Node with specific index from the List
 	if (myLinkList.deleteIndex(3))
 	{
 		// Displaying List after Deleting 3rd Node from the List
-		cout << "\nDisplaying List after Deleting 2rd Node from the List:\n";
+		cout << "\nDisplaying List after Deleting 3rd Node from the List:\n";
 		myLinkList.displayList();
 	}
 	else
@@ -99,10 +105,15 @@ int main()	// Main function started*********************************************
 		cout << "\nGiven value is not present in the List.\n";
 	}
 
+	// Sorting Nodes
+	cout << "Displaying Nodes of List after sorting them in Descending order:\n";
+	myLinkList.descendingSortingOfList();
+	myLinkList.displayList();
+
 	// Manipulating Current Node ***************************
 
 	// Displaying Current Node
-	cout << "Displaying current Node;\n";
+	cout << "Displaying current Node:\n";
 	cout << myLinkList.get() << endl;
 
 	// Moving current Node to the start
@@ -110,9 +121,19 @@ int main()	// Main function started*********************************************
 	cout << "\nAfter Moving current Node to the start:\n";
 	cout << myLinkList.get() << endl;
 
-	// Moving current Node
-	myLinkList.move();
-	cout << "\nAfter Moving current Node:\n";
+	// Moving current Node Forward
+	myLinkList.moveForward();
+	cout << "\nAfter Moving current Node Forward:\n";
+	cout << myLinkList.get() << endl;
+
+	// Moving current Node Backward
+	myLinkList.moveBack();
+	cout << "\nAfter Moving current Node Backward:\n";
+	cout << myLinkList.get() << endl;
+
+	// Moving current Node to the end
+	myLinkList.end();
+	cout << "\nAfter Moving current Node to the end:\n";
 	cout << myLinkList.get() << endl;
 	//******************************************************
 
@@ -129,7 +150,10 @@ int main()	// Main function started*********************************************
 	cout << "\nDisplaying sum of the Nodes of the List.\n";
 	cout << myLinkList.sumOfNodesofList() << endl;
 
-
+	// Sorting Nodes
+	cout << "Displaying Nodes of List after sorting them in Ascending order:\n";
+	myLinkList.ascendingSortingOfList();
+	myLinkList.displayList();
 
 	return 0;
 }	// Main function Ended ******************************************************************************

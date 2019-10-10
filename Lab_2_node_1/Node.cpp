@@ -3,37 +3,38 @@
 
 Node::Node()
 {
-	value = 0;
-	prevNode = nextNode = 0;
+	Node::value = 0;
+	Node::prevNode = 0;
+	Node::nextNode = 0;
 }
 
 // function for setting value of node
 void Node::setValue(int v)
 {
-		value = v;
+	Node::value = v;
 }
 
 void Node::setPrevNode(Node* nn)
 {
-	prevNode = nn;
+	Node::prevNode = nn;
 }
 
 void Node::setNextNode(Node* nn)
 {
-	nextNode = nn;
+	Node::nextNode = nn;
 }
 
 int Node::getValue()
 {
-	return value;
+	return Node::value;
 }
 
 Node* Node::getPrevNode()
 {
-	return prevNode;
+	return Node::prevNode;
 }
 
 Node* Node::getNextNode()
 {
-	return nextNode;
+	return Node::nextNode;
 }

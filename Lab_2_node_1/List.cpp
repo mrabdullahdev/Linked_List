@@ -6,7 +6,6 @@ List::List()
 {
 	headNode = 0;
 	currentNode = 0;
-	lastCurrentNode = 0;
 	size = 0;
 }
 
@@ -25,8 +24,9 @@ void List::insert(int n)
 		{
 			Node* newNode = new Node();
 			newNode->setNextNode(currentNode->getNextNode());
+			newNode->setPrevNode(currentNode);//
+			currentNode->getNextNode()->setPrevNode(newNode);//
 			currentNode->setNextNode(newNode);
-			lastCurrentNode = currentNode;
 			currentNode = newNode;
 			currentNode->setValue(n);
 			size++;
@@ -53,6 +53,8 @@ void List::insertAtBegin(int n)
 	{
 		Node* newNode = new Node();
 		newNode->setNextNode(headNode);
+		newNode->setPrevNode(0);//
+		headNode->setPrevNode(newNode);//
 		headNode = newNode;
 		headNode->setValue(n);
 		List::start();
@@ -69,6 +71,7 @@ void List::insertAtEnd(int n)
 	{
 		headNode = newNode;
 		headNode->setNextNode(0);
+		headNode->setPrevNode(0);
 		headNode->setValue(n);
 		List::start();
 	}
@@ -78,10 +81,10 @@ void List::insertAtEnd(int n)
 		// In case Current Node is not at the last of the List
 		while (currentNode->getNextNode() != 0)
 		{
-			List::move();
+			List::moveForward();
 		}
-		lastCurrentNode = currentNode;
 		currentNode->setNextNode(newNode);
+		newNode->setPrevNode(currentNode);//
 		currentNode = newNode;
 		currentNode->setValue(n);
 		currentNode->setNextNode(0);
@@ -102,7 +105,7 @@ bool List::updateValue(int presentValue, int newValue)
 			currentNode->setValue(newValue);
 			return true;
 		}
-		List::move();
+		List::moveForward();
 	}
 	return false;
 }
@@ -116,7 +119,7 @@ bool List::updateIndex(int n, int index)
 		List::start();
 		for (int i = 1; i < index ; i++)
 		{
-			List::move();
+			List::moveForward();
 		}
 		currentNode->setValue(n);
 		return true;
@@ -128,52 +131,56 @@ bool List::updateIndex(int n, int index)
 // function for deleting specific Node from the List
 bool List::deleteNode(int n)
 {
-	if (size != 1)
-	{
-		List::start();
-		for (int i = 0; i < size; i++)	// This for loop will go through the List untill it finds the required value
+	
+		for (int i = 0; i < size; i++)
 		{
-			if (currentNode->getValue() == n)	// In case node is found to be deleted
+			List::moveForward();
+			if (List::get() == n)
 			{
 				Node* newNode = new Node();
 				newNode = currentNode;
-				if (currentNode->getNextNode() == 0)	// this if will work when the Node to be deleted is last Node
+				if (size == 1)
 				{
-
-					List::start();
-					for (int j = 0; j < size - 2; j++)
-					{
-						List::move();
-					}
-					currentNode->setNextNode(0);
+					List::List();
+					delete newNode;
+					return true;
 				}
-				else if (currentNode == headNode)
-				{
-					headNode = headNode->getNextNode();
-					lastCurrentNode->setNextNode(currentNode);
-					currentNode = headNode->getNextNode();
-				}
-				// This else will work when Node to be deleted is not last Node of List
 				else
 				{
-					currentNode = currentNode->getNextNode();
-					lastCurrentNode->setNextNode(currentNode);
-
+					if (currentNode == headNode)
+					{
+						headNode = headNode->getNextNode();
+						headNode->setPrevNode(0);
+						List::start();
+						delete newNode;
+						size--;
+						return true;
+					}
+					else
+					{
+						if (currentNode->getNextNode() == 0)
+						{
+							List::moveBack();
+							currentNode->setNextNode(0);
+							delete newNode;
+							size--;
+							return true;
+						}
+						else
+						{
+							currentNode->getPrevNode()->setNextNode(currentNode->getNextNode());
+							currentNode->getNextNode()->setPrevNode(currentNode->getPrevNode());
+							List::moveForward();
+							delete newNode;
+							size--;
+							return true;
+						}
+					}
 				}
-				delete newNode;
-				size--;
-				return true;
+
 			}
-			List::move();
 		}
-	}
 	
-	// this else will work when List has only one Node
-	else
-	{
-	List::List();
-	return true;
-	}
 	return false;
 }
 
@@ -188,16 +195,23 @@ bool List::deleteIndex(int index)
 
 			for (int i = 1; i < index; i++)
 			{
-				List::move();
+				List::moveForward();
 			}
 			Node* newNode = new Node();
 			newNode = currentNode;
 			if (index == 1)	// For deleting first Node of List
 			{
-				headNode = currentNode->getNextNode();
+				headNode = headNode->getNextNode();
+				currentNode = headNode;//
+				headNode->setPrevNode(0);//
 			}
-			currentNode = currentNode->getNextNode();
-			lastCurrentNode->setNextNode(currentNode);
+			else
+			{
+				currentNode->getPrevNode()->setNextNode(currentNode->getNextNode());//
+				currentNode->getNextNode()->setPrevNode(currentNode->getPrevNode());//
+				currentNode = currentNode->getNextNode();//
+			}
+
 			delete newNode;
 			size--;
 			return true;
@@ -205,21 +219,22 @@ bool List::deleteIndex(int index)
 		else if (index == size)	// For deleting last Node of List
 		{
 			Node* newNode = new Node();
-			List::start();
-			for (int i = 1; i < size - 2; i++)
-			{
-				List::move();
-			}
-			currentNode->setNextNode(0);
+			List::end();
+			currentNode = currentNode->getPrevNode();
+			currentNode->
+			setNextNode(0);
+			
 			delete newNode;
 			size--;
 			return true;
 		}
+		
 	}
 	// this else will work when List has only one Node
 	else
 	{
 		List::List();
+		return true;
 	}
 	
 
@@ -236,7 +251,7 @@ bool List::searchValue(int n)
 		{
 			return true;
 		}
-		List::move();
+		List::moveForward();
 	}
 	return false;
 }
@@ -251,7 +266,7 @@ int List::sumOfNodesofList()
 		{
 			sum += currentNode->getValue();
 			if (i != (size - 1))
-				List::move();
+				List::moveForward();
 		}
 	return sum;
 }
@@ -270,17 +285,24 @@ int List::getSize()
 // function for starting the list
 void List::start()
 {
-	lastCurrentNode = 0;
 	currentNode = headNode;
 }
 
+// function to move the current Node at the last Node
+void List::end()
+{
+	while (currentNode->getNextNode() != NULL)
+	{
+		List::moveForward();
+	}
+}
+
 // function for moving the current node to the next node
-void List::move()
+void List::moveForward()
 {
 	// this if will that the currentnode is pointing the last node
 	if (currentNode->getNextNode() != 0)
 	{
-		lastCurrentNode = currentNode;
 		currentNode = currentNode->getNextNode();
 	}
 	else
@@ -288,6 +310,20 @@ void List::move()
 		List::start();
 	}
 	
+}
+
+// function to move current Node to the previous Node
+void List::moveBack()
+{
+	if (currentNode == headNode)
+	{
+		List::end();
+	}
+	else
+	{
+		currentNode = currentNode->getPrevNode();
+
+	}
 }
 
 // this function inserts the node at the specific position
@@ -304,7 +340,7 @@ void List::insertTo(int n, int position)
 		List::start();
 		for (int i = 0; i < position - 2; i++)
 		{
-			List::move();
+			List::moveForward();
 		}
 		List::insert(n);
 	}
@@ -315,24 +351,33 @@ void List::insertAfter(int n, int value)
 {
 	int f = 0;
 	List::start();
-		for (int i = 1; i < size; i++)
+		for (int i = 0; i < size; i++)
 		{
-			if (currentNode->getValue() == value)
+			if (get() == value)
 			{
 				f = 1;
 				Node* newNode = new Node();
-				newNode->setNextNode(currentNode->getNextNode());
-				currentNode->setNextNode(newNode);
-				lastCurrentNode = currentNode;
+				newNode->setPrevNode(currentNode);//
+				if (currentNode->getNextNode() == 0)
+				{
+					currentNode->setNextNode(newNode);
+					newNode->setNextNode(0);
+				}
+				else
+				{
+					newNode->setNextNode(currentNode->getNextNode());
+					currentNode->getNextNode()->setPrevNode(newNode);//
+					currentNode->setNextNode(newNode);
+				}
 				currentNode = newNode;
 				currentNode->setValue(n);
 				size++;
 				break;
 			}
-			List::move();
+			List::moveForward();
 		}
 		if (f == 0)
-			cout << "\nValue did not match ant of the Nodes in the List.\n";
+			cout << "\nValue did not match any of the Nodes in the List.\n";
 }
 
 // function for displaying the values of nodes of list
@@ -347,15 +392,115 @@ void List::displayList()
 	{
 		List::start();
 		cout << "Values of nodes of List are:\n";
-		for (int i = 0; i < size-1; i++)
+		for (int i = 0; i < size; i++)
 		{
 			cout << List::get() << endl;
 			if (i < (size - 1))
 			{
-				List::move();
+				List::moveForward();
 			}
 		}
 	}
 	
 	
 }
+// function for sorting Nodes of List in ascending order
+void List::ascendingSortingOfList()
+{
+	int temp;
+	List::start();
+	Node* ptr = new Node;
+	for (int i = 0; i < size; i++)
+	{
+		ptr = currentNode->getNextNode();
+		for (int j = i + 1; j < size; j++)	
+		{
+			if (currentNode->getValue() > ptr->getValue())
+			{
+				temp = currentNode->getValue();
+				currentNode->setValue(ptr->getValue());
+				ptr->setValue(temp);
+			}
+			ptr = ptr->getNextNode();
+		}
+		List::moveForward();
+	}
+}
+
+// function for sorting Nodes of List in ascending order
+void List::descendingSortingOfList()
+{
+	int temp;
+	List::start();
+	Node* ptr = new Node;
+	for (int i = 0; i < size; i++)
+	{
+		ptr = currentNode->getNextNode();
+		for (int j = i + 1; j < size; j++)
+		{
+			if (currentNode->getValue() < ptr->getValue())
+			{
+				temp = currentNode->getValue();
+				currentNode->setValue(ptr->getValue());
+				ptr->setValue(temp);
+			}
+			ptr = ptr->getNextNode();
+		}
+		List::moveForward();
+	}
+}
+
+
+
+
+/*if (size != 1)
+	{
+		List::start();
+		for (int i = 0; i < size; i++)	// This for loop will go through the List untill it finds the required value
+		{
+			if (currentNode->getValue() == n)	// In case node is found to be deleted
+			{
+				Node* newNode = new Node();
+				newNode = currentNode;
+				if (currentNode->getNextNode() == 0)	// this if will work when the Node to be deleted is last Node
+				{
+
+					List::start();
+					for (int j = 0; j < size - 2; j++)
+					{
+						List::moveForward();
+					}
+					currentNode->setNextNode(0);
+				}
+				else
+				{
+					if (currentNode == headNode)
+					{
+						headNode = headNode->getNextNode();
+						headNode->setPrevNode(0);//
+						currentNode = headNode;
+					}
+					// This else will work when Node to be deleted is not last Node of List
+				/*	else
+					{
+						currentNode->getNextNode()->setPrevNode(currentNode->getPrevNode());//
+						currentNode->getPrevNode()->setNextNode(currentNode->getNextNode());//
+						currentNode = currentNode->getNextNode();
+					}
+				}
+
+				delete newNode;
+				size--;
+				return true;
+			}
+			List::moveForward();
+		}
+	}
+
+	// this else will work when List has only one Node
+	else
+	{
+	List::List();
+	return true;
+	}
+	return false; */

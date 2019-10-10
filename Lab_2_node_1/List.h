@@ -8,7 +8,6 @@ class List
 	// private members 
 	Node* headNode;
 	Node* currentNode;
-	Node* lastCurrentNode;
 	int size;
 public:
 	List();
@@ -17,10 +16,14 @@ public:
 	void insertAtBegin(int n);
 	void insertAtEnd(int n);
 	void start();
-	void move();
+	void end();
+	void moveForward();
+	void moveBack();
 	void insertTo(int n, int position);
 	void insertAfter(int n, int value);
 	void displayList();
+	void ascendingSortingOfList();
+	void descendingSortingOfList();
 
 	bool updateValue(int presentValue, int newValue);
 	bool updateIndex(int n, int index);
@@ -31,5 +34,7 @@ public:
 	int sumOfNodesofList();
 	int get();
 	int getSize();
+
+
 };
 
