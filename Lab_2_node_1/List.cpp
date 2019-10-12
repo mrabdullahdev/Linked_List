@@ -9,88 +9,113 @@ List::List()
 	size = 0;
 }
 
+List::List(int n)
+{
+	Node* newNode = new Node();
+	newNode->setValue(n);
+	headNode = currentNode = newNode;
+	size = 1;
+}
+
 // function for inserting node in the list
 void List::insert(int n)
 {
-	
+	Node* newNode = new Node();
 	if (currentNode != 0)
 	{
-		if (currentNode->getNextNode() == 0)	//Adding node at the end of list
+		if (currentNode->getNextNode() != 0)	//When Node is not Last of list
 		{
-			List::insertAtEnd(n);
+			currentNode->getNextNode()->setPrevNode(newNode);//
 		}
-		// this else will work when newnode is to be added between two existing nodes
-		else
-		{
-			Node* newNode = new Node();
 			newNode->setNextNode(currentNode->getNextNode());
 			newNode->setPrevNode(currentNode);//
-			currentNode->getNextNode()->setPrevNode(newNode);//
 			currentNode->setNextNode(newNode);
-			currentNode = newNode;
-			currentNode->setValue(n);
-			size++;
-		}
-		
 	}
 	// this else will work when adding first node in the list
 	else
 	{
-		List::insertAtEnd(n);
+		headNode = newNode;
 	}
-	
+	currentNode = newNode;
+	currentNode->setValue(n);
+	size++;
 }
 
 // function to add the node in the beginning of the list
 void List::insertAtBegin(int n)
 {
-	if (headNode == 0)	// Adding first Node in the List
+	Node* newNode = new Node();
+	if (headNode != 0)	// Adding first Node in the List
 	{
-		List::insertAtEnd(n);
-	}
-	// This else will work when List is not empty
-	else
-	{
-		Node* newNode = new Node();
-		newNode->setNextNode(headNode);
-		newNode->setPrevNode(0);//
 		headNode->setPrevNode(newNode);//
+	}
+		newNode->setNextNode(headNode);
 		headNode = newNode;
 		headNode->setValue(n);
 		List::start();
 		size++;
-	}
 	
+}
+
+// this function inserts the node at the specific position
+void List::insertTo(int n, int position)
+{
+	List::start();
+	for (int i = 0; i < position - 2; i++)
+	{
+		List::moveForward();
+	}
+	List::insert(n);	// calling insert function to insert Node
+}
+// function to insert Node before certain Node
+void List::insertBefore(int n, int dnum)
+{
+	int f = 0;
+	List::start();
+	for (int i = 0; i < size; i++)
+	{
+		if (get() == dnum)
+		{
+			f = 1;
+			if (currentNode == headNode)
+				List::insertAtBegin(n);
+			else
+			{
+				List::moveBack();
+				List::insert(n);	// calling insert function to insert Node
+			}
+			break;
+		}
+		List::moveForward();
+	}
+	if (f == 0)
+		cout << "\nValue did not match any of the Nodes in the List.\n";
+}
+
+// function to insert Node after certain Node
+void List::insertAfter(int n, int dnum)
+{
+	int f = 0;
+	List::start();
+	for (int i = 0; i < size; i++)
+	{
+		if (get() == dnum)
+		{
+			f = 1;
+			List::insert(n);	// calling insert function to insert Node
+			break;
+		}
+		List::moveForward();
+	}
+	if (f == 0)
+		cout << "\nValue did not match any of the Nodes in the List.\n";
 }
 
 // function for inserting Node at the end of the List
 void List::insertAtEnd(int n)
 {
-	Node* newNode = new Node();
-	if (headNode == 0)	// Adding first Node in the List
-	{
-		headNode = newNode;
-		headNode->setNextNode(0);
-		headNode->setPrevNode(0);
-		headNode->setValue(n);
-		List::start();
-	}
-	// This else will work when the List is not Empty
-	else
-	{
-		// In case Current Node is not at the last of the List
-		while (currentNode->getNextNode() != 0)
-		{
-			List::moveForward();
-		}
-		currentNode->setNextNode(newNode);
-		newNode->setPrevNode(currentNode);//
-		currentNode = newNode;
-		currentNode->setValue(n);
-		currentNode->setNextNode(0);
-	}
-	size++;
-	
+	List::end();
+	List::insert(n);
 }
 
 // function to update the value of specific node & to return the status of the updation
@@ -142,8 +167,7 @@ bool List::deleteNode(int n)
 				if (size == 1)
 				{
 					List::List();
-					delete newNode;
-					return true;
+					
 				}
 				else
 				{
@@ -151,33 +175,26 @@ bool List::deleteNode(int n)
 					{
 						headNode = headNode->getNextNode();
 						headNode->setPrevNode(0);
-						List::start();
-						delete newNode;
-						size--;
-						return true;
+						List::start();						
 					}
 					else
 					{
 						if (currentNode->getNextNode() == 0)
 						{
 							List::moveBack();
-							currentNode->setNextNode(0);
-							delete newNode;
-							size--;
-							return true;
+							currentNode->setNextNode(0);																	
 						}
 						else
 						{
 							currentNode->getPrevNode()->setNextNode(currentNode->getNextNode());
 							currentNode->getNextNode()->setPrevNode(currentNode->getPrevNode());
-							List::moveForward();
-							delete newNode;
-							size--;
-							return true;
+							List::moveForward();							
 						}
 					}
+					size--;
 				}
-
+				delete newNode;
+				return true;
 			}
 		}
 	
@@ -236,8 +253,6 @@ bool List::deleteIndex(int index)
 		List::List();
 		return true;
 	}
-	
-
 	return false;
 }
 
@@ -302,83 +317,20 @@ void List::moveForward()
 {
 	// this if will that the currentnode is pointing the last node
 	if (currentNode->getNextNode() != 0)
-	{
 		currentNode = currentNode->getNextNode();
-	}
 	else
-	{
 		List::start();
-	}
-	
 }
 
 // function to move current Node to the previous Node
 void List::moveBack()
 {
 	if (currentNode == headNode)
-	{
 		List::end();
-	}
 	else
-	{
 		currentNode = currentNode->getPrevNode();
-
-	}
 }
 
-// this function inserts the node at the specific position
-void List::insertTo(int n, int position)
-{
-	
-	if (position == size + 1)	// Adding newnode at the end of list
-	{
-		List::insertAtEnd(n);
-	}
-	// this else will work if the newnode is to be added in the between two nodes
-	else
-	{
-		List::start();
-		for (int i = 0; i < position - 2; i++)
-		{
-			List::moveForward();
-		}
-		List::insert(n);
-	}
-}
-
-// function to insert Node after certain Node
-void List::insertAfter(int n, int value)
-{
-	int f = 0;
-	List::start();
-		for (int i = 0; i < size; i++)
-		{
-			if (get() == value)
-			{
-				f = 1;
-				Node* newNode = new Node();
-				newNode->setPrevNode(currentNode);//
-				if (currentNode->getNextNode() == 0)
-				{
-					currentNode->setNextNode(newNode);
-					newNode->setNextNode(0);
-				}
-				else
-				{
-					newNode->setNextNode(currentNode->getNextNode());
-					currentNode->getNextNode()->setPrevNode(newNode);//
-					currentNode->setNextNode(newNode);
-				}
-				currentNode = newNode;
-				currentNode->setValue(n);
-				size++;
-				break;
-			}
-			List::moveForward();
-		}
-		if (f == 0)
-			cout << "\nValue did not match any of the Nodes in the List.\n";
-}
 
 // function for displaying the values of nodes of list
 void List::displayList()
@@ -457,8 +409,7 @@ void List::revertingList()
 	ptr = headNode;
 	int dSize = size / 2;
 	int temp;
-	List::end();
-	
+	List::end();	
 	for (int i = 0; i < dSize; i++)
 	{
 		temp = currentNode->getValue();
@@ -470,57 +421,3 @@ void List::revertingList()
 	List::start();
 }
 
-
-
-
-/*if (size != 1)
-	{
-		List::start();
-		for (int i = 0; i < size; i++)	// This for loop will go through the List untill it finds the required value
-		{
-			if (currentNode->getValue() == n)	// In case node is found to be deleted
-			{
-				Node* newNode = new Node();
-				newNode = currentNode;
-				if (currentNode->getNextNode() == 0)	// this if will work when the Node to be deleted is last Node
-				{
-
-					List::start();
-					for (int j = 0; j < size - 2; j++)
-					{
-						List::moveForward();
-					}
-					currentNode->setNextNode(0);
-				}
-				else
-				{
-					if (currentNode == headNode)
-					{
-						headNode = headNode->getNextNode();
-						headNode->setPrevNode(0);//
-						currentNode = headNode;
-					}
-					// This else will work when Node to be deleted is not last Node of List
-				/*	else
-					{
-						currentNode->getNextNode()->setPrevNode(currentNode->getPrevNode());//
-						currentNode->getPrevNode()->setNextNode(currentNode->getNextNode());//
-						currentNode = currentNode->getNextNode();
-					}
-				}
-
-				delete newNode;
-				size--;
-				return true;
-			}
-			List::moveForward();
-		}
-	}
-
-	// this else will work when List has only one Node
-	else
-	{
-	List::List();
-	return true;
-	}
-	return false; */
