@@ -69,7 +69,11 @@ int main()	// Main function started*********************************************
 	{
 		cout << "\nIndex is out of bound.\n";
 	}
-	
+	// Inserting Node before a certain Node
+	cout << "\nInserting Node with value 49 before Node with value 20.\n";
+	myLinkList.insertBefore(49, 20);
+	cout << "\nDisplaying List after adding new Node.\n";
+	myLinkList.displayList();
 	// Updating specific Node from the List
 	if (myLinkList.updateValue(250, 44))
 	{
@@ -105,7 +109,7 @@ int main()	// Main function started*********************************************
 		cout << "\nGiven value is not present in the List.\n";
 	}
 
-	// Sorting Nodes
+	// Sorting Nodes in descending order
 	cout << "Displaying Nodes of List after sorting them in Descending order:\n";
 	myLinkList.descendingSortingOfList();
 	myLinkList.displayList();
