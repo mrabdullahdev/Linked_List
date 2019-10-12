@@ -42,7 +42,8 @@ public:
 	int sumOfNodesofList();
 	int get();
 	int getSize();
-
+	// Destructor
+	~List();
 
 };
 

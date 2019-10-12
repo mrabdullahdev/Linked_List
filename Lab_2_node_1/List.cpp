@@ -61,7 +61,7 @@ void List::insertAtBegin(int n)
 void List::insertTo(int n, int position)
 {
 	List::start();
-	for (int i = 0; i < position - 2; i++)
+	for (int i = 2; i < position ; i++)
 	{
 		List::moveForward();
 	}
@@ -297,6 +297,7 @@ int List::getSize()
 {
 	return size;
 }
+
 // function for starting the list
 void List::start()
 {
@@ -421,3 +422,14 @@ void List::revertingList()
 	List::start();
 }
 
+// Destructor
+List::~List()
+{
+	for (int i = 0; i < size; i++)
+	{
+		Node* newNode = new Node();
+		newNode = currentNode;
+		delete newNode;
+		List::moveForward();
+	}
+}
